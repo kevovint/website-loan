@@ -22,6 +22,7 @@
     <td>{{ '{:,.2f}'.format(loan.monthly_payment) }}</td>
     <td>{{ loan.status }}</td>
     <td>
+      <a href="{{ url_for('main.loan_detail', loan_id=loan.id) }}">View</a>
       {% if loan.status == 'Pending' %}
       <form method="post" action="{{ url_for('main.decide', loan_id=loan.id, action='approve') }}" style="display:inline">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

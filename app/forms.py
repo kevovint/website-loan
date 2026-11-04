@@ -34,3 +34,8 @@ class LoanForm(FlaskForm):
     months = IntegerField("Terms (months)", validators=[DataRequired(), NumberRange(min=1, max=60)])
     purpose = StringField("Purpose", validators=[Length(max=200)])
     submit = SubmitField("Apply")
+
+
+class PaymentForm(FlaskForm):
+    amount = FloatField("Payment amount", validators=[DataRequired(), NumberRange(min=0.01)])
+    submit = SubmitField("Record payment")

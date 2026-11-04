@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request,current_app,abort
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db
-from app.forms import RegistrationForm, LoginForm,LoanForm
-from app.models import User,Loan
+from app.forms import RegistrationForm, LoginForm,LoanForm,PaymentForm   
+from app.models import User,Loan,Payment  
 from app.utils import calculate_monthly_payment,roles_required
 
 main = Blueprint("main", __name__)
@@ -88,7 +88,7 @@ def apply():
 def staff():
     status = request.args.get("status")
     query = Loan.query
-    if status in ("Pending", "Approved", "Rejected"):
+    if status in ("Pending", "Approved", "Rejected","Paid"):
         query = query.filter_by(status=status)
     loans = query.order_by(Loan.created_at.desc()).all()
     return render_template("staff.html", loans=loans, status=status)
@@ -108,3 +108,28 @@ def decide(loan_id, action):
     db.session.commit()
     flash(f"Loan #{loan.id} {loan.status.lower()}.", "success")
     return redirect(url_for("main.staff"))
+
+@main.route("/staff/loan/<int:loan_id>", methods=["GET", "POST"])
+@login_required
+@roles_required("officer", "admin")
+def loan_detail(loan_id):
+    loan = db.get_or_404(Loan, loan_id)
+    form = PaymentForm()
+    if form.validate_on_submit():
+        if loan.status != "Approved":
+            flash("Payments can only be recorded on approved loans.", "danger")
+        elif form.amount.data > loan.balance + 0.005:
+            flash("That payment is more than the remaining balance.", "danger")
+        else:
+            db.session.add(Payment(
+                loan_id=loan.id,
+                amount=form.amount.data,
+                recorded_by=current_user.id,
+            ))
+            db.session.commit()
+            if loan.balance < 0.005:
+                loan.status = "Paid"
+                db.session.commit()
+            flash("Payment recorded.", "success")
+        return redirect(url_for("main.loan_detail", loan_id=loan.id))
+    return render_template("staff_loan.html", loan=loan, form=form)

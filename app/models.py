@@ -31,8 +31,28 @@ class Loan(db.Model):
     purpose = db.Column(db.String(200))
     status = db.Column(db.String(20), default="Pending", nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    payments = db.relationship("Payment", backref="loan", lazy=True)
+
+    @property
+    def total_paid(self):
+        return self.monthly_payment * self.months
+
+    @property
+    def total_paid(self):
+        return sum(p.amount for p in self.payments)
+
+    @property
+    def balance(self):
+        return max(self.total_due - self.total_paid, 0)
 
 
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
+
+class Payment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    loan_id = db.Column(db.Integer, db.ForeignKey("loan.id"), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    paid_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    recorded_by = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
