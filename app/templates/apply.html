@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Apply - QuickLoan{% endblock %}
+{% block content %}
+<h1>Apply for a loan</h1>
+<p>Interest rate: {{ rate }}% per year.</p>
+<form method="post" novalidate>
+  {{ form.hidden_tag() }}
+  {% for field in [form.amount, form.months, form.purpose] %}
+    {{ field.label }}
+    {{ field }}
+    {% for error in field.errors %}
+      <div class="error">{{ error }}</div>
+    {% endfor %}
+  {% endfor %}
+  {{ form.submit }}
+</form>
+{% endblock %}

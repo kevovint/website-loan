@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Login - QuickLoan{% endblock %}
+{% block content %}
+<h1>Log in</h1>
+<form method="post" novalidate>
+  {{ form.hidden_tag() }}
+  {% for field in [form.email, form.password] %}
+    {{ field.label }}
+    {{ field }}
+    {% for error in field.errors %}
+      <div class="error">{{ error }}</div>
+    {% endfor %}
+  {% endfor %}
+  {{ form.submit }}
+</form>
+<p>No account yet? <a href="{{ url_for('main.register') }}">Register</a></p>
+{% endblock %}

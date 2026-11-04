@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Staff - QuickLoan{% endblock %}
+{% block content %}
+<h1>All applications</h1>
+<p>
+  <a href="{{ url_for('main.staff') }}">All</a> |
+  <a href="{{ url_for('main.staff', status='Pending') }}">Pending</a> |
+  <a href="{{ url_for('main.staff', status='Approved') }}">Approved</a> |
+  <a href="{{ url_for('main.staff', status='Rejected') }}">Rejected</a>
+</p>
+
+{% if loans %}
+<table>
+  <tr><th>#</th><th>Customer</th><th>Phone</th><th>Amount</th><th>Months</th><th>Monthly</th><th>Status</th><th>Action</th></tr>
+  {% for loan in loans %}
+  <tr>
+    <td>{{ loan.id }}</td>
+    <td>{{ loan.borrower.full_name }}</td>
+    <td>{{ loan.borrower.phone }}</td>
+    <td>{{ '{:,.2f}'.format(loan.amount) }}</td>
+    <td>{{ loan.months }}</td>
+    <td>{{ '{:,.2f}'.format(loan.monthly_payment) }}</td>
+    <td>{{ loan.status }}</td>
+    <td>
+      {% if loan.status == 'Pending' %}
+      <form method="post" action="{{ url_for('main.decide', loan_id=loan.id, action='approve') }}" style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button>Approve</button>
+      </form>
+      <form method="post" action="{{ url_for('main.decide', loan_id=loan.id, action='reject') }}" style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button>Reject</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+  <p>No applications found.</p>
+{% endif %}
+{% endblock %}

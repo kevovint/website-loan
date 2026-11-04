@@ -1,0 +1,13 @@
+body { font-family: system-ui, sans-serif; margin: 0; color: #222; background: #f7f9fc; }
+nav { background: #1a73e8; padding: 12px 16px; display: flex; gap: 16px; }
+nav a { color: #fff; text-decoration: none; }
+nav .brand { font-weight: bold; margin-right: auto; }
+main { max-width: 640px; margin: 24px auto; padding: 0 16px; }
+.btn, button { background: #1a73e8; color: #fff; border: 0; border-radius: 6px; padding: 10px 16px; text-decoration: none; font-size: 16px; cursor: pointer; }
+input { width: 100%; padding: 10px; margin: 4px 0 12px; box-sizing: border-box; font-size: 16px; }
+.flash { padding: 10px; border-radius: 6px; margin: 12px 16px; }
+.flash.success { background: #d9f2e1; }
+.flash.danger { background: #fbdcdc; }
+.error { color: #b00020; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+th, td { border-bottom: 1px solid #ddd; padding: 8px; text-align: left; }

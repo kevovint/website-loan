@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Fast, simple loans</h1>
+<p>Apply online, track your application, and see your repayment schedule.</p>
+{% if not current_user.is_authenticated %}
+  <a class="btn" href="{{ url_for('main.register') }}">Get started</a>
+{% endif %}
+{% endblock %}
