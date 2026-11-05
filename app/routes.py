@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from app import db
 from app.forms import RegistrationForm, LoginForm,LoanForm,PaymentForm   
 from app.models import User,Loan,Payment  
-from app.utils import calculate_monthly_payment,roles_required
+from app.utils import calculate_monthly_payment,roles_required,build_schedule
 
 main = Blueprint("main", __name__)
 
@@ -133,3 +133,12 @@ def loan_detail(loan_id):
             flash("Payment recorded.", "success")
         return redirect(url_for("main.loan_detail", loan_id=loan.id))
     return render_template("staff_loan.html", loan=loan, form=form)
+
+@main.route("/loan/<int:loan_id>")
+@login_required
+def my_loan(loan_id):
+    loan = db.get_or_404(Loan, loan_id)
+    if loan.user_id != current_user.id:
+        abort(404)
+    schedule = build_schedule(loan.amount, loan.interest_rate, loan.months)
+    return render_template("my_loan.html", loan=loan, schedule=schedule)

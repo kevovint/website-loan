@@ -6,14 +6,16 @@
 
 {% if loans %}
 <table>
-  <tr><th>Date</th><th>Amount</th><th>Months</th><th>Monthly</th><th>Status</th></tr>
+  <tr><th>Date</th><th>Amount</th><th>Months</th><th>Monthly</th><th>Balance</th><th>Status</th><th></th></tr>
   {% for loan in loans %}
   <tr>
     <td>{{ loan.created_at.strftime('%d %b %Y') }}</td>
     <td>{{ '{:,.2f}'.format(loan.amount) }}</td>
     <td>{{ loan.months }}</td>
     <td>{{ '{:,.2f}'.format(loan.monthly_payment) }}</td>
+    <td>{% if loan.status in ['Approved', 'Paid'] %}{{ '{:,.2f}'.format(loan.balance) }}{% else %}-{% endif %}</td>
     <td>{{ loan.status }}</td>
+    <td><a href="{{ url_for('main.my_loan', loan_id=loan.id) }}">View</a></td>
   </tr>
   {% endfor %}
 </table>

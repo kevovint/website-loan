@@ -18,3 +18,15 @@ def roles_required(*roles):
             return f(*args, **kwargs)
         return wrapper
     return decorator
+
+def build_schedule(amount, annual_rate, months):
+    r = annual_rate / 100 / 12
+    payment = calculate_monthly_payment(amount, annual_rate, months)
+    balance = amount
+    rows = []
+    for m in range(1, months + 1):
+        interest = balance * r
+        principal = payment - interest
+        balance = max(balance - principal, 0)
+        rows.append((m, payment, principal, interest, balance))
+    return rows
