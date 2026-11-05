@@ -31,10 +31,11 @@ class Loan(db.Model):
     purpose = db.Column(db.String(200))
     status = db.Column(db.String(20), default="Pending", nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
     payments = db.relationship("Payment", backref="loan", lazy=True)
 
     @property
-    def total_paid(self):
+    def total_due(self):
         return self.monthly_payment * self.months
 
     @property
@@ -44,7 +45,6 @@ class Loan(db.Model):
     @property
     def balance(self):
         return max(self.total_due - self.total_paid, 0)
-
 
 @login_manager.user_loader
 def load_user(user_id):
