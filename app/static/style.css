@@ -11,3 +11,4 @@ input { width: 100%; padding: 10px; margin: 4px 0 12px; box-sizing: border-box; 
 .error { color: #b00020; font-size: 14px; }
 table { width: 100%; border-collapse: collapse; margin-top: 16px; }
 th, td { border-bottom: 1px solid #ddd; padding: 8px; text-align: left; }
+nav .linkbtn { background: none; border: 0; color: #fff; padding: 0; font-size: inherit; cursor: pointer; }

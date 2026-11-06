@@ -14,7 +14,10 @@
     {% if current_user.role in ['officer', 'admin'] %}
       <a href="{{ url_for('main.staff') }}">Staff</a>
     {% endif %}
-    <a href="{{ url_for('main.logout') }}">Logout</a>
+   <form method="post" action="{{ url_for('main.logout') }}" style="display:inline">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="linkbtn">Logout</button>
+    </form>
   {% else %}
     <a href="{{ url_for('main.login') }}">Login</a>
     <a href="{{ url_for('main.register') }}">Register</a>

@@ -30,6 +30,7 @@ def register():
     return render_template("register.html", form=form)
 
 @main.route("/login", methods=["GET", "POST"])
+@limiter.limit("5 per minute",method=["POST"])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("main.dashboard"))
@@ -45,7 +46,7 @@ def login():
             return redirect(url_for("main.dashboard"))
     return render_template("login.html", form=form)
 
-@main.route("/logout")
+@main.route("/logout", methods=["POST"])
 @login_required
 def logout():
     logout_user()
